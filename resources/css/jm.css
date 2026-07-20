@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============ TOKEN — light & dark lewat CSS variables ============ */
+:root {
+  --jm-accent: #4f46e5;               /* dioverride inline dari Settings */
+  --jm-bg:      #fafaf9;
+  --jm-surface: #ffffff;
+  --jm-ink:     #1c1917;
+  --jm-muted:   #78716c;
+  --jm-line:    #e7e5e4;
+  --jm-shadow:  28 25 23;             /* rgb bayangan */
+}
+html.dark {
+  --jm-bg:      #0c0a09;
+  --jm-surface: #1c1917;
+  --jm-ink:     #fafaf9;
+  --jm-muted:   #a8a29e;
+  --jm-line:    #292524;
+  --jm-shadow:  0 0 0;
+  color-scheme: dark;
+}
+html { background: var(--jm-bg); color-scheme: light; }
+
+body { font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+       background: var(--jm-bg); color: var(--jm-ink);
+       -webkit-font-smoothing: antialiased; }
+h1, h2, h3, .display { letter-spacing: -0.03em; }
+.money { font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+/* ============ Aksen turunan ============ */
+.btn-accent   { background: var(--jm-accent); }
+.text-accent-c { color: var(--jm-accent); }
+.bg-accent-soft  { background: color-mix(in srgb, var(--jm-accent) 10%, var(--jm-surface)); }
+.bg-accent-soft2 { background: color-mix(in srgb, var(--jm-accent) 16%, var(--jm-surface)); }
+.shadow-cta { box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--jm-accent) 55%, transparent); }
+
+/* ============ SIGNATURE: aurora aksen toko ============ */
+.jm-aurora { position: absolute; inset: 0 0 auto 0; height: 420px; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(560px 260px at 18% -8%,  color-mix(in srgb, var(--jm-accent) 22%, transparent), transparent 70%),
+    radial-gradient(680px 300px at 85% -12%, color-mix(in srgb, var(--jm-accent) 12%, transparent), transparent 70%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent); }
+html.dark .jm-aurora {
+  background:
+    radial-gradient(560px 260px at 18% -8%,  color-mix(in srgb, var(--jm-accent) 30%, transparent), transparent 70%),
+    radial-gradient(680px 300px at 85% -12%, color-mix(in srgb, var(--jm-accent) 16%, transparent), transparent 70%); }
+
+/* ============ Komponen ============ */
+.jm-card { background: var(--jm-surface); border-radius: 1.25rem;
+  box-shadow: 0 1px 2px rgb(var(--jm-shadow) / .04), 0 8px 24px -12px rgb(var(--jm-shadow) / .12);
+  border: 1px solid color-mix(in srgb, var(--jm-ink) 7%, transparent); }
+a.jm-card, .jm-lift, button.jm-card { transition: transform .2s ease, box-shadow .2s ease; }
+a.jm-card:hover, .jm-lift:hover, button.jm-card:hover { transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgb(var(--jm-shadow) / .05), 0 16px 40px -12px rgb(var(--jm-shadow) / .2); }
+
+.jm-input { width: 100%; border-radius: .875rem; padding: .8rem 1rem; min-height: 48px;
+  background: var(--jm-surface); color: var(--jm-ink);
+  border: 1px solid color-mix(in srgb, var(--jm-ink) 22%, transparent);
+  transition: border-color .15s, box-shadow .15s; }
+.jm-input::placeholder { color: color-mix(in srgb, var(--jm-muted) 75%, transparent); }
+.jm-input:focus { outline: none; border-color: var(--jm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--jm-accent) 22%, transparent); }
+
+.jm-header { position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--jm-surface) 72%, transparent);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid color-mix(in srgb, var(--jm-ink) 6%, transparent); }
+.jm-footer { background: var(--jm-surface);
+  border-top: 1px solid color-mix(in srgb, var(--jm-ink) 6%, transparent); }
+.jm-pill { background: var(--jm-surface);
+  border: 1px solid color-mix(in srgb, var(--jm-ink) 12%, transparent); }
+.jm-pill:hover { border-color: color-mix(in srgb, var(--jm-ink) 30%, transparent); }
+.jm-divider { background: var(--jm-line); }
+.jm-track { background: color-mix(in srgb, var(--jm-ink) 7%, var(--jm-surface)); }
+
+/* Override utilitas terang yang tersebar di template konten (biar dark rapi tanpa edit ratusan baris) */
+html.dark .bg-white        { background-color: var(--jm-surface); }
+html.dark .bg-white\/90,
+html.dark .bg-white\/85,
+html.dark .bg-white\/70    { background-color: color-mix(in srgb, var(--jm-surface) 85%, transparent); }
+html.dark .bg-stone-50,
+html.dark .hover\:bg-stone-50:hover,
+html.dark .bg-slate-50     { background-color: color-mix(in srgb, var(--jm-ink) 6%, var(--jm-surface)); }
+html.dark .bg-stone-100,
+html.dark .bg-slate-100    { background-color: color-mix(in srgb, var(--jm-ink) 9%, var(--jm-surface)); }
+html.dark .text-stone-400,
+html.dark .text-slate-400  { color: #78716c; }
+html.dark .bg-amber-50   { background-color: rgb(69 39 3 / .5); }
+html.dark .bg-emerald-50 { background-color: rgb(2 66 42 / .5); }
+html.dark .bg-rose-50    { background-color: rgb(76 5 25 / .5); }
+html.dark .text-amber-700, html.dark .text-amber-800 { color: #fbbf24; }
+html.dark .text-emerald-700, html.dark .text-emerald-800 { color: #34d399; }
+html.dark .text-rose-700 { color: #fb7185; }
+html.dark .border-amber-200 { border-color: rgb(180 83 9 / .4); }
+html.dark .border-emerald-200 { border-color: rgb(4 120 87 / .4); }
+html.dark .border-rose-200 { border-color: rgb(190 18 60 / .4); }
+html.dark dialog { background: var(--jm-surface); color: var(--jm-ink); }
+
+/* ============ Nav progress (soft page navigation ala YouTube) ============ */
+#jm-nav-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 9999;
+  opacity: 0; background: var(--jm-accent); border-radius: 0 3px 3px 0; pointer-events: none;
+  box-shadow: 0 0 10px var(--jm-accent), 0 0 4px var(--jm-accent);
+  transition: width .18s ease, opacity .3s ease; }
+#jm-nav-progress.active { opacity: 1; }
+
+/* ============ Dasar kualitas ============ */
+:focus-visible { outline: 2px solid var(--jm-accent); outline-offset: 2px; border-radius: .5rem; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--jm-ink) 20%, transparent); border-radius: 3px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+[x-cloak] { display: none !important; }
+dialog::backdrop { background: rgb(0 0 0 / .5); backdrop-filter: blur(2px); }
+
+
+/* ============ Sales Page (konten HTML kaya dari admin) ============ */
+.jm-salespage { color: var(--jm-ink); font-size: 1.05rem; line-height: 1.75; }
+.jm-salespage h1 { font-size: 2.25rem; font-weight: 800; letter-spacing: -.03em; margin: 1.5rem 0 .75rem; }
+.jm-salespage h2 { font-size: 1.6rem; font-weight: 800; letter-spacing: -.02em; margin: 2rem 0 .75rem; }
+.jm-salespage h3 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 .5rem; }
+.jm-salespage p { margin: 0 0 1rem; }
+.jm-salespage a { color: var(--jm-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.jm-salespage ul, .jm-salespage ol { margin: 0 0 1rem 1.25rem; }
+.jm-salespage ul { list-style: disc; } .jm-salespage ol { list-style: decimal; }
+.jm-salespage li { margin: .35rem 0; }
+.jm-salespage img { border-radius: 1rem; margin: 1.5rem auto; max-width: 100%; height: auto;
+  box-shadow: 0 8px 24px -12px rgb(var(--jm-shadow) / .18); }
+.jm-salespage blockquote { border-left: 4px solid var(--jm-accent); padding: .5rem 0 .5rem 1.25rem;
+  margin: 1.5rem 0; color: var(--jm-muted); font-style: italic; }
+.jm-salespage strong { font-weight: 700; }
+.jm-salespage .jm-embed { display: flex; justify-content: center; }
+.jm-salespage .jm-embed iframe { max-width: 100%; border-radius: 1rem; border: 0; }
+.jm-salespage hr { border: 0; border-top: 1px solid var(--jm-line); margin: 2rem 0; }
