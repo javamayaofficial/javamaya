@@ -38,6 +38,8 @@ class StoreSettings extends Page implements Forms\Contracts\HasForms
             'email_provider' => jm_setting('email_provider', 'mailketing'),
             'mailketing_api_key' => jm_setting('mailketing_api_key'),
             'mail_from' => jm_setting('mail_from', env('MAIL_FROM_ADDRESS')),
+            'test_wa_target' => auth()->user()?->phone,
+            'test_email_target' => auth()->user()?->email,
             'google_client_id' => jm_setting('google_client_id'),
             'google_client_secret' => jm_setting('google_client_secret'),
             'manual_bank_name' => jm_setting('manual_bank_name'),
@@ -76,6 +78,12 @@ class StoreSettings extends Page implements Forms\Contracts\HasForms
                         ->helperText('DripSender tersedia di Tahap 3.'),
                     Forms\Components\TextInput::make('mailketing_api_key')->label('Mailketing API Key')->password()->revealable(),
                     Forms\Components\TextInput::make('mail_from')->label('Email pengirim')->email(),
+                    Forms\Components\TextInput::make('test_wa_target')->label('Nomor tujuan test WA')
+                        ->tel()->dehydrated(false)
+                        ->helperText('Isi nomor WhatsApp yang benar-benar ingin dipakai untuk test, format bebas.'),
+                    Forms\Components\TextInput::make('test_email_target')->label('Email tujuan test')
+                        ->email()->dehydrated(false)
+                        ->helperText('Isi inbox aktif yang benar-benar Anda pakai untuk menerima test email.'),
                 ])->columns(2),
                 Forms\Components\Tabs\Tab::make('Transfer Manual & QRIS')->schema([
                     Forms\Components\TextInput::make('manual_bank_name')->label('Bank'),
@@ -125,19 +133,25 @@ class StoreSettings extends Page implements Forms\Contracts\HasForms
     {
         $svc = app(\App\Services\Notifications\NotificationService::class);
         $adapter = $svc->waProvider();
+        $recipient = trim((string) ($this->data['test_wa_target'] ?? auth()->user()->phone ?? ''));
+
         if (! $adapter) { Notification::make()->title('Provider WA belum dikonfigurasi')->warning()->send(); return; }
-        $result = $adapter->send(auth()->user()->phone ?? '', 'Test WA dari Javamaya ✓');
+        if (! filled($recipient)) { Notification::make()->title('Nomor tujuan test WA kosong')->body('Isi kolom nomor tujuan test WA terlebih dahulu.')->warning()->send(); return; }
+        $result = $adapter->send($recipient, 'Test WA dari Javamaya ✓');
         Notification::make()->title($result['ok'] ? 'WA test terkirim ✓' : 'WA test gagal')
-            ->body($result['error'] ?? 'Cek WhatsApp Anda.')->{$result['ok'] ? 'success' : 'danger'}()->send();
+            ->body($result['error'] ?? ('Cek WhatsApp tujuan: ' . $recipient))->{$result['ok'] ? 'success' : 'danger'}()->send();
     }
 
     public function testEmail(): void
     {
         $svc = app(\App\Services\Notifications\NotificationService::class);
         $adapter = $svc->emailProvider();
+        $recipient = trim((string) ($this->data['test_email_target'] ?? auth()->user()->email ?? ''));
+
         if (! $adapter) { Notification::make()->title('Provider email belum dikonfigurasi')->warning()->send(); return; }
-        $result = $adapter->send(auth()->user()->email, 'Test email dari Javamaya ✓', 'Test Javamaya');
+        if (! filled($recipient)) { Notification::make()->title('Email tujuan test kosong')->body('Isi kolom email tujuan test terlebih dahulu.')->warning()->send(); return; }
+        $result = $adapter->send($recipient, 'Test email dari Javamaya ✓', 'Test Javamaya');
         Notification::make()->title($result['ok'] ? 'Email test terkirim ✓' : 'Email test gagal')
-            ->body($result['error'] ?? 'Cek inbox Anda.')->{$result['ok'] ? 'success' : 'danger'}()->send();
+            ->body($result['error'] ?? ('Cek inbox tujuan: ' . $recipient))->{$result['ok'] ? 'success' : 'danger'}()->send();
     }
 }
