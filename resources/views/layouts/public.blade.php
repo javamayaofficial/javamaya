@@ -22,7 +22,11 @@
     @endforeach
     @stack('head')
 </head>
-<body class="antialiased relative min-h-screen flex flex-col">
+@php
+    $layoutBodyClass = trim('antialiased relative min-h-screen flex flex-col ' . ($bodyClass ?? ''));
+    $layoutBodyStyle = $bodyStyle ?? null;
+@endphp
+<body class="{{ $layoutBodyClass }}" @if(filled($layoutBodyStyle)) style="{{ $layoutBodyStyle }}" @endif>
     <div id="jm-nav-progress"></div>
     <div class="jm-aurora"></div>
 
@@ -71,6 +75,7 @@
 
     <main class="relative z-10 flex-1 w-full">@yield('content')</main>
 
+    @unless (isset($hideFooter) && $hideFooter)
     <footer class="relative z-10 mt-20 jm-footer">
         <div class="max-w-5xl mx-auto px-4 py-10">
             <div class="flex flex-col sm:flex-row gap-6 justify-between">
@@ -90,6 +95,7 @@
             </div>
         </div>
     </footer>
+    @endunless
 
     {{-- Dark toggle + nav progress --}}
     <script>

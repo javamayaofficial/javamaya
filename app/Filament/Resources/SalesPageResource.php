@@ -30,18 +30,18 @@ class SalesPageResource extends Resource
                     }),
                 Forms\Components\TextInput::make('slug')->required()->unique(ignoreRecord: true)
                     ->helperText(fn (?CanvasPage $record) => 'URL: ' . url('/l/' . ($record?->slug ?: '{slug}'))),
-                Forms\Components\RichEditor::make('content_html')->label('Isi (tulis bebas)')
+                Forms\Components\Textarea::make('content_html')->label('HTML Sales Page')
                     ->required()->columnSpanFull()
-                    ->toolbarButtons([
-                        'bold', 'italic', 'underline', 'strike', 'link',
-                        'h2', 'h3', 'bulletList', 'orderedList', 'blockquote',
-                        'codeBlock', 'attachFiles', 'undo', 'redo',
+                    ->rows(18)
+                    ->extraAttributes([
+                        'style' => 'font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;',
+                        'spellcheck' => 'false',
                     ])
-                    ->helperText('Tulis teks kaya (heading, list, gambar, link). Untuk tempel embed (video YouTube, form), gunakan kolom "Embed HTML" di bawah.'),
-                Forms\Components\Textarea::make('embed_html')->label('Embed HTML (opsional)')
+                    ->helperText('Tempel HTML jadi dari luar di sini. Bisa isi section/body saja atau satu dokumen HTML lengkap (`<!DOCTYPE html>...`). Jika dokumen lengkap, sistem akan mengambil isi `<head>`, `<body>`, `title`, `meta description`, `body class`, dan `body style` secara otomatis.'),
+                Forms\Components\Textarea::make('embed_html')->label('Embed HTML tambahan (opsional / legacy)')
                     ->rows(4)->dehydrated(false)->columnSpanFull()
                     ->placeholder('<iframe src="https://youtube.com/embed/..."></iframe>')
-                    ->helperText('Kode embed disisipkan di AKHIR halaman. Kosongkan bila tidak perlu.')
+                    ->helperText('Opsional. Jika Anda sudah menaruh semua kode di kolom HTML utama, kolom ini tidak perlu diisi.')
                     ->afterStateHydrated(function (Forms\Components\Textarea $component, ?CanvasPage $record) {
                         // Tampilkan kembali embed yang tersimpan di dalam penanda
                         if ($record && preg_match('/<!--EMBED-->(.*?)<!--\/EMBED-->/s', (string) $record->content_html, $m)) {
@@ -55,10 +55,16 @@ class SalesPageResource extends Resource
                     ->helperText('Halaman hanya bisa diakses publik bila terbit.'),
                 Forms\Components\Toggle::make('is_homepage')->label('Jadikan halaman utama (homepage)')
                     ->helperText('Bila aktif, halaman ini menggantikan katalog default di domain utama "/". Otomatis hanya satu yang bisa jadi homepage.')
-                    ->live(),
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        if ($state) {
+                            $set('show_header', false);
+                            $set('show_footer', false);
+                        }
+                    }),
                 Forms\Components\Placeholder::make('url_preview')->label('Akan tampil di')
                     ->content(fn (Forms\Get $get) => $get('is_homepage')
-                        ? '🏠 Halaman utama (/) — menggantikan katalog'
+                        ? '🏠 Halaman utama (/) — menggantikan katalog dan tampil full canvas'
                         : '🔗 ' . url('/l/' . ($get('slug') ?: '{slug}'))),
             ])->columns(2),
 

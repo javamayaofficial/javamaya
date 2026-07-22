@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\CanvasPage;
 use App\Models\FunnelEvent;
+use App\Support\CanvasPageHtmlRenderer;
 
 class SalesPageController extends Controller
 {
@@ -13,14 +14,20 @@ class SalesPageController extends Controller
     {
         $page = CanvasPage::where('slug', $slug)->where('published', true)->firstOrFail();
         $this->trackView($page);
-        return view('public.sales-page', ['page' => $page]);
+        return view('public.sales-page', [
+            'page' => $page,
+            'rendered' => CanvasPageHtmlRenderer::parse($page->content_html),
+        ]);
     }
 
     /** Dipakai route '/' bila ada homepage sales page aktif. */
     public function homepage(CanvasPage $page)
     {
         $this->trackView($page);
-        return view('public.sales-page', ['page' => $page]);
+        return view('public.sales-page', [
+            'page' => $page,
+            'rendered' => CanvasPageHtmlRenderer::parse($page->content_html),
+        ]);
     }
 
     protected function trackView(CanvasPage $page): void
