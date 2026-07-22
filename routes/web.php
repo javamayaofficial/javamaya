@@ -124,6 +124,7 @@ Route::middleware(['web', 'auth', 'jm.maintenance', 'jm.session', 'jm.tick'])
     ->prefix('akun')->name('user.')->group(function () {
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/area-member', [AccountController::class, 'memberArea'])->name('member.area');
     Route::get('/transaksi', [AccountController::class, 'transactions'])->name('transactions');
     Route::get('/downloads', [AccountController::class, 'downloads'])->name('downloads');
     Route::get('/downloads/{file}/ambil', [AccountController::class, 'requestDownload'])->name('download.request');
@@ -132,7 +133,10 @@ Route::middleware(['web', 'auth', 'jm.maintenance', 'jm.session', 'jm.tick'])
     Route::get('/kelas/{slug}', [ClassController::class, 'show'])->name('class.show');
     Route::post('/materi/{material}/selesai', [ClassController::class, 'toggleComplete'])
         ->middleware('jm.ratelimit:60')->name('material.toggle');
+    Route::get('/sertifikat', [AccountController::class, 'certificates'])->name('certificates');
     Route::get('/certificate/{certificate}', [AccountController::class, 'certificateDownload'])->name('certificate.download');
+    Route::get('/affiliate', [AccountController::class, 'affiliate'])->name('affiliate');
+    Route::get('/profil', [AccountController::class, 'profile'])->name('profile');
 
     Route::get('/sesi', [AccountController::class, 'sessions'])->name('sessions');
     Route::post('/sesi/{id}/cabut', [AccountController::class, 'revokeSession'])->name('sessions.revoke');

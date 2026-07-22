@@ -4,7 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
+use App\Models\ClassRoom;
 use App\Models\GdprRequest;
+use App\Models\MemberAccess;
 use App\Models\ProductDownload;
 use App\Services\Auth\SessionManager;
 use App\Services\Download\DownloadTokenManager;
@@ -12,6 +14,30 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
+    public function memberArea(Request $request)
+    {
+        $user = $request->user();
+        $access = MemberAccess::with('product.classRoom')
+            ->where('user_id', $user->id)
+            ->whereNull('revoked_at')
+            ->latest()
+            ->get();
+
+        $classes = $access->pluck('product.classRoom')
+            ->filter()
+            ->unique('id')
+            ->values()
+            ->map(fn (ClassRoom $classRoom) => [
+                'class' => $classRoom,
+                'progress' => $classRoom->progressFor($user),
+            ]);
+
+        return view('user.member-area', [
+            'access' => $access,
+            'classes' => $classes,
+        ]);
+    }
+
     public function transactions(Request $request)
     {
         return view('user.transactions', [
@@ -51,6 +77,23 @@ class AccountController extends Controller
         return response()->download($path, $certificate->code . '.pdf');
     }
 
+    public function certificates(Request $request)
+    {
+        return view('user.certificates', [
+            'certificates' => $request->user()->certificates()->with('classRoom')->latest('issued_at')->get(),
+        ]);
+    }
+
+    public function affiliate(Request $request)
+    {
+        $affiliate = $request->user()->affiliate;
+
+        return view('user.affiliate', [
+            'affiliate' => $affiliate,
+            'commissions' => $affiliate ? $affiliate->commissions()->latest()->limit(10)->get() : collect(),
+        ]);
+    }
+
     public function sessions(Request $request)
     {
         return view('user.sessions', [
@@ -82,6 +125,22 @@ class AccountController extends Controller
     {
         return view('user.gdpr', [
             'requests' => GdprRequest::where('user_id', $request->user()->id)->latest()->get(),
+        ]);
+    }
+
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        return view('user.profile', [
+            'user' => $user,
+            'activeSessions' => $user->deviceSessions()->whereNull('revoked_at')->count(),
+            'trustedDevices' => $user->trustedDevices()->where('expires_at', '>', now())->count(),
+            'activeAccess' => $user->memberAccess()
+                ->whereNull('revoked_at')
+                ->where(fn ($query) => $query->whereNull('expires_at')->orWhere('expires_at', '>', now()))
+                ->count(),
+            'ordersCount' => $user->orders()->count(),
         ]);
     }
 

@@ -1,34 +1,52 @@
-@extends('layouts.public')
+@extends('layouts.member')
 @section('title', $class->title)
-@section('content')
-<div class="max-w-3xl mx-auto px-4 py-8"
+@section('member_eyebrow', 'Area Member')
+@section('member_title', $class->title)
+@section('member_subtitle', 'Lanjutkan materi, pantau progress, dan unduh sertifikat langsung dari area member yang lebih terstruktur.')
+@section('member_content')
+<div class="jm-member-stack"
      x-data="classProgress({{ $progress }}, @js($certificate ? route('user.certificate.download', $certificate->id) : null))">
-    <h1 class="text-2xl font-extrabold">{{ $class->title }}</h1>
-    @if ($expiresAt)
-        <div class="mt-1 text-sm text-amber-600 font-semibold">Akses hingga {{ $expiresAt->translatedFormat('d F Y') }}</div>
-    @endif
-
-    <div class="mt-4 jm-card p-4">
-        <div class="flex justify-between text-sm font-semibold"><span>Progress</span><span x-text="progress + '%'"></span></div>
-        <div class="mt-2 h-3 rounded-full bg-stone-100 overflow-hidden">
-            <div class="h-full btn-accent transition-all duration-500" :style="'width:' + progress + '%'"></div>
+    <section class="jm-member-panel">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+                <h2 class="jm-member-panel-title">{{ $class->title }}</h2>
+                <p class="jm-member-panel-copy">
+                    @if ($expiresAt)
+                        Akses aktif hingga {{ $expiresAt->translatedFormat('d F Y') }}.
+                    @else
+                        Akses belajar aktif dan siap dilanjutkan kapan saja.
+                    @endif
+                </p>
+            </div>
+            <div class="jm-member-chip">
+                <span class="jm-member-chip-key">Progress</span>
+                <span x-text="progress + '%'"></span>
+            </div>
         </div>
-        <template x-if="certUrl">
-            <a :href="certUrl" class="mt-3 inline-flex items-center gap-2 text-emerald-600 font-bold text-sm">🎓 Download Sertifikat PDF ➜</a>
-        </template>
-    </div>
 
-    <div class="mt-6 space-y-3">
+        <div class="mt-5 jm-member-progress">
+            <span :style="'width:' + Math.max(4, progress) + '%'"></span>
+        </div>
+
+        <template x-if="certUrl">
+            <a :href="certUrl" class="mt-5 inline-flex jm-member-btn jm-member-btn--primary">Download Sertifikat PDF</a>
+        </template>
+    </section>
+
+    <section class="jm-member-panel">
+        <h2 class="jm-member-panel-title">Daftar materi</h2>
+        <p class="jm-member-panel-copy">Materi disusun seperti learning path agar lebih nyaman dibuka dari member dashboard.</p>
+        <div class="mt-6 space-y-3">
         @foreach ($class->materials as $material)
-            <div class="jm-card p-4"
+            <div class="jm-member-card"
                  x-data="{ done: {{ in_array($material->id, $completedIds) ? 'true' : 'false' }}, busy: false }">
                 <div class="flex items-start justify-between gap-3">
-                    <div class="font-bold">{{ $loop->iteration }}. {{ $material->title }}</div>
+                    <div class="font-bold text-[#072347]">{{ $loop->iteration }}. {{ $material->title }}</div>
                     <button @click="busy = true; toggleMaterial('{{ route('user.material.toggle', $material->id) }}')
                                 .then(d => { if (d) { done = !done; } busy = false; })"
                             :disabled="busy"
                             class="shrink-0 text-sm font-semibold rounded-full px-3 py-1.5 border min-h-[36px] transition disabled:opacity-50"
-                            :class="done ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'border-slate-300 text-slate-500'">
+                            :class="done ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'border-slate-300 text-slate-500 bg-white'">
                         <span x-text="busy ? '…' : (done ? '✓ Selesai' : 'Tandai selesai')"></span>
                     </button>
                 </div>
@@ -47,7 +65,8 @@
                 </div>
             </div>
         @endforeach
-    </div>
+        </div>
+    </section>
 </div>
 <script>
 function classProgress(initial, certUrl) {
