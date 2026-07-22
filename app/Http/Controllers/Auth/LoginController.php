@@ -11,12 +11,21 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
+    protected function googleReady(): bool
+    {
+        return filled(jm_setting('google_client_id', env('GOOGLE_CLIENT_ID')))
+            && filled(jm_setting('google_client_secret', env('GOOGLE_CLIENT_SECRET')));
+    }
+
     public function showLogin()
     {
-        $googleReady = filled(jm_setting('google_client_id', env('GOOGLE_CLIENT_ID')))
-            && filled(jm_setting('google_client_secret', env('GOOGLE_CLIENT_SECRET')));
         $waReady = (bool) app(\App\Services\Notifications\NotificationService::class)->waProvider();
-        return view('public.login', ['googleReady' => $googleReady, 'waReady' => $waReady]);
+        return view('public.login', ['googleReady' => $this->googleReady(), 'waReady' => $waReady]);
+    }
+
+    public function showRegister()
+    {
+        return view('public.register', ['googleReady' => $this->googleReady()]);
     }
 
     public function login(Request $request)

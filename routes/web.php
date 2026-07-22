@@ -80,7 +80,7 @@ Route::middleware(['web', 'jm.maintenance', 'jm.tick'])->group(function () {
     // Auth publik
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->middleware('jm.ratelimit:20');
-    Route::get('/register', fn () => view('public.register'))->name('register');
+    Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
     Route::post('/register', [LoginController::class, 'register'])->middleware('jm.ratelimit:10');
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgot'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetController::class, 'sendLink'])
