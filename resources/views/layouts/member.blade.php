@@ -114,8 +114,10 @@
         z-index: 60;
         width: min(88vw, 360px);
         height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
         overflow-y: auto;
-        overflow: hidden;
         border-radius: 0 28px 28px 0;
         border: 1px solid rgba(120, 144, 181, 0.22);
         background:
@@ -253,6 +255,11 @@
 
     .jm-member-sidebar-foot {
         padding: 0 1rem 1rem;
+        margin-top: auto;
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(7, 26, 61, 0), rgba(7, 26, 61, 0.98) 28%);
+        backdrop-filter: blur(8px);
     }
 
     .jm-member-usercard {
@@ -724,7 +731,7 @@
         }
 
         .jm-member-sidebar-foot {
-            padding: 0 0.9rem 1rem;
+            padding: 0 0.9rem calc(1rem + env(safe-area-inset-bottom, 0px));
         }
 
         .jm-member-mobile-dock {
@@ -819,6 +826,9 @@
 
         .jm-member-sidebar-foot {
             margin-top: auto;
+            position: static;
+            background: transparent;
+            backdrop-filter: none;
         }
     }
 </style>
