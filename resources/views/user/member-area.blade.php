@@ -1,7 +1,7 @@
 @extends('layouts.member')
-@section('title', 'Area Member')
-@section('member_eyebrow', 'Area Member')
-@section('member_title', 'Area Member')
+@section('title', 'Member Area')
+@section('member_eyebrow', 'Member Area')
+@section('member_title', 'Member Area')
 @section('member_subtitle', 'Semua kelas, akses aktif, dan konten premium Anda dikumpulkan dalam satu halaman khusus seperti portal member modern.')
 @section('member_content')
 <section class="jm-member-panel">

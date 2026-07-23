@@ -100,7 +100,7 @@
             <p class="jm-member-panel-copy">Pintasan cepat untuk area yang paling sering dibuka.</p>
             <div class="mt-5 grid gap-3 sm:grid-cols-2">
                 @foreach ([
-                    ['route' => 'user.member.area', 'label' => 'Area Member', 'copy' => 'Buka kelas dan akses konten'],
+                    ['route' => 'user.member.area', 'label' => 'Member Area', 'copy' => 'Buka kelas dan akses konten'],
                     ['route' => 'user.downloads', 'label' => 'File Downloads', 'copy' => 'Ambil file produk digital'],
                     ['route' => 'user.certificates', 'label' => 'Sertifikat', 'copy' => 'Lihat sertifikat yang tersedia'],
                     ['route' => 'user.profile', 'label' => 'Profil', 'copy' => 'Kelola akun dan keamanan'],

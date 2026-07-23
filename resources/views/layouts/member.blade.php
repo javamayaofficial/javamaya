@@ -85,9 +85,11 @@
     }
 
     .jm-member-menu-btn {
+        width: 3rem;
         min-width: 3rem;
         min-height: 3rem;
-        padding: 0.8rem 0.95rem;
+        padding: 0;
+        flex-shrink: 0;
     }
 
     .jm-member-sidebar-close {
@@ -649,9 +651,9 @@
         display: grid;
         justify-items: center;
         gap: 0.28rem;
-        min-height: 3.8rem;
-        padding: 0.55rem 0.4rem;
-        border-radius: 18px;
+        min-height: 3.45rem;
+        padding: 0.45rem 0.25rem;
+        border-radius: 16px;
         font-size: 0.68rem;
         font-weight: 800;
         text-align: center;
@@ -691,12 +693,65 @@
     }
 
     @media (max-width: 767px) {
+        .jm-member-mobile-bar {
+            padding: 0.75rem 0.85rem;
+        }
+
+        .jm-member-nav {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+            padding: 0.9rem;
+        }
+
+        .jm-member-link {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 8rem;
+            padding: 1rem;
+            border-radius: 22px;
+        }
+
+        .jm-member-link-badge {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 1rem;
+        }
+
+        .jm-member-link-copy {
+            margin-top: 0.32rem;
+            line-height: 1.4;
+        }
+
+        .jm-member-sidebar-foot {
+            padding: 0 0.9rem 1rem;
+        }
+
+        .jm-member-mobile-dock {
+            left: 0.75rem;
+            right: 0.75rem;
+            gap: 0.4rem;
+            padding: 0.5rem;
+        }
+
         .jm-member-topbar {
             padding: 1.1rem;
         }
 
         .jm-member-heading {
             font-size: 1.65rem;
+        }
+    }
+
+    @media (max-width: 479px) {
+        .jm-member-menu-btn-label,
+        .jm-member-sidebar-close-label {
+            display: none;
+        }
+
+        .jm-member-sidebar-close {
+            width: 2.75rem;
+            padding: 0;
         }
     }
 
@@ -790,7 +845,7 @@
 
     $memberNav = [
         ['route' => 'user.dashboard', 'patterns' => ['user.dashboard'], 'icon' => 'dashboard', 'label' => 'Dashboard', 'copy' => 'Ringkasan akun dan aktivitas'],
-        ['route' => 'user.member.area', 'patterns' => ['user.member.area', 'user.class.*'], 'icon' => 'library', 'label' => 'Area Member', 'copy' => 'Konten, kelas, dan akses aktif'],
+        ['route' => 'user.member.area', 'patterns' => ['user.member.area', 'user.class.*'], 'icon' => 'library', 'label' => 'Member Area', 'copy' => 'Konten, kelas, dan akses aktif'],
         ['route' => 'user.transactions', 'patterns' => ['user.transactions'], 'icon' => 'receipt', 'label' => 'Transaksi', 'copy' => 'Riwayat order dan invoice'],
         ['route' => 'user.downloads', 'patterns' => ['user.downloads', 'user.download.*'], 'icon' => 'download', 'label' => 'File Downloads', 'copy' => 'Unduhan aset dan produk digital'],
         ['route' => 'user.certificates', 'patterns' => ['user.certificates', 'user.certificate.*'], 'icon' => 'certificate', 'label' => 'Sertifikat Saya', 'copy' => 'Daftar sertifikat pembelajaran'],
@@ -821,7 +876,7 @@
     <section class="jm-member-mobile-bar">
         <button type="button" class="jm-member-menu-btn" @click="menuOpen = true" aria-label="Buka menu member">
             {!! $memberIconMap['menu'] !!}
-            Menu
+            <span class="jm-member-menu-btn-label">Menu</span>
         </button>
         <div class="jm-member-mobile-bar-copy">
             <div class="jm-member-mobile-bar-label">Navigasi cepat</div>
@@ -854,7 +909,7 @@
                 </div>
                 <button type="button" class="jm-member-sidebar-close" @click="menuOpen = false" aria-label="Tutup menu">
                     {!! $memberIconMap['close'] !!}
-                    Tutup
+                    <span class="jm-member-sidebar-close-label">Tutup</span>
                 </button>
             </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.member')
 @section('title', $class->title)
-@section('member_eyebrow', 'Area Member')
+@section('member_eyebrow', 'Member Area')
 @section('member_title', $class->title)
 @section('member_subtitle', 'Lanjutkan materi, pantau progress, dan unduh sertifikat langsung dari area member yang lebih terstruktur.')
 @section('member_content')
