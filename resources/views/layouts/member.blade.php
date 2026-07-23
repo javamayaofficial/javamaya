@@ -579,6 +579,14 @@
 @section('content')
 @php
     $memberUser = auth()->user();
+    $memberAffiliate = $memberUser?->affiliate;
+    $memberBankAccount = $memberUser?->bankAccounts()->latest('id')->first();
+    $needsPhoneCompletion = blank($memberUser?->phone);
+    $needsAffiliatePayoutAccount = $memberAffiliate
+        && (! $memberBankAccount
+            || blank($memberBankAccount->bank_name)
+            || blank($memberBankAccount->account_number)
+            || blank($memberBankAccount->account_holder));
     $memberTitle = trim($__env->yieldContent('member_title'));
     $memberEyebrow = trim($__env->yieldContent('member_eyebrow'));
     $memberSubtitle = trim($__env->yieldContent('member_subtitle'));
@@ -657,12 +665,20 @@
             </section>
 
             <div class="jm-member-content">
-                @if (blank($memberUser?->phone))
+                @if ($needsPhoneCompletion || $needsAffiliatePayoutAccount)
                     <section class="jm-member-panel" style="border-color: rgba(255, 145, 0, 0.18); background: linear-gradient(135deg, rgba(255, 247, 236, 0.98), rgba(255, 252, 247, 0.98));">
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div>
                                 <div class="jm-member-panel-title">Lengkapi profil Anda</div>
-                                <p class="jm-member-panel-copy">Akun Google Anda sudah masuk, tetapi nomor WhatsApp belum diisi. Lengkapi profil dulu agar member area dan notifikasi bekerja lebih utuh.</p>
+                                <p class="jm-member-panel-copy">
+                                    @if ($needsPhoneCompletion && $needsAffiliatePayoutAccount)
+                                        Nomor WhatsApp dan rekening payout affiliate Anda belum lengkap. Lengkapi keduanya agar akun dan pencairan komisi siap dipakai.
+                                    @elseif ($needsPhoneCompletion)
+                                        Akun Anda sudah masuk, tetapi nomor WhatsApp belum diisi. Lengkapi profil dulu agar member area dan notifikasi bekerja lebih utuh.
+                                    @else
+                                        Data rekening payout affiliate belum lengkap. Lengkapi bank, nomor rekening, dan nama pemilik rekening agar pencairan komisi siap diproses.
+                                    @endif
+                                </p>
                             </div>
                             @unless (request()->routeIs('user.profile'))
                                 <a href="{{ route('user.profile') }}" class="jm-member-btn jm-member-btn--primary">Lengkapi sekarang</a>

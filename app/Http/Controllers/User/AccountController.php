@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankAccount;
 use App\Models\Certificate;
 use App\Models\ClassRoom;
 use App\Models\GdprRequest;
@@ -88,9 +89,11 @@ class AccountController extends Controller
     public function affiliate(Request $request)
     {
         $affiliate = $request->user()->affiliate;
+        $bankAccount = $request->user()->bankAccounts()->latest('id')->first();
 
         return view('user.affiliate', [
             'affiliate' => $affiliate,
+            'bankAccount' => $bankAccount,
             'commissions' => $affiliate ? $affiliate->commissions()->latest()->limit(10)->get() : collect(),
         ]);
     }
@@ -132,9 +135,16 @@ class AccountController extends Controller
     public function profile(Request $request)
     {
         $user = $request->user();
+        $bankAccount = $user->bankAccounts()->latest('id')->first();
+        $needsPayoutAccount = (bool) $user->affiliate && (! $bankAccount
+            || blank($bankAccount->bank_name)
+            || blank($bankAccount->account_number)
+            || blank($bankAccount->account_holder));
 
         return view('user.profile', [
             'user' => $user,
+            'bankAccount' => $bankAccount,
+            'needsPayoutAccount' => $needsPayoutAccount,
             'activeSessions' => $user->deviceSessions()->whereNull('revoked_at')->count(),
             'trustedDevices' => $user->trustedDevices()->where('expires_at', '>', now())->count(),
             'activeAccess' => $user->memberAccess()
@@ -153,13 +163,38 @@ class AccountController extends Controller
             'name' => 'required|string|max:100',
             'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => 'required|string|min:9|max:20',
+            'bank_name' => 'nullable|string|max:100',
+            'account_number' => 'nullable|string|max:40',
+            'account_holder' => 'nullable|string|max:100',
         ]);
+
+        $requiresPayoutAccount = (bool) $user->affiliate;
+        $bankName = trim((string) ($data['bank_name'] ?? ''));
+        $accountNumber = trim((string) ($data['account_number'] ?? ''));
+        $accountHolder = trim((string) ($data['account_holder'] ?? ''));
+
+        if ($requiresPayoutAccount && ($bankName === '' || $accountNumber === '' || $accountHolder === '')) {
+            return back()->withErrors([
+                'bank_name' => 'Lengkapi rekening payout affiliate: nama bank, nomor rekening, dan nama pemilik rekening wajib diisi.',
+            ])->withInput();
+        }
 
         $user->update([
             'name' => $data['name'],
             'email' => strtolower($data['email']),
             'phone' => jm_normalize_phone($data['phone']),
         ]);
+
+        if ($bankName !== '' || $accountNumber !== '' || $accountHolder !== '' || $requiresPayoutAccount) {
+            BankAccount::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'bank_name' => $bankName,
+                    'account_number' => $accountNumber,
+                    'account_holder' => $accountHolder,
+                ]
+            );
+        }
 
         return back()->with('status', 'Profil berhasil diperbarui.');
     }

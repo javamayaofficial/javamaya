@@ -28,6 +28,22 @@
                 <input id="profile-phone" name="phone" inputmode="numeric" placeholder="08xxxxxxxxxx" value="{{ old('phone', $user->phone) }}" class="mt-3 w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]" required>
                 <div class="mt-2 text-sm text-muted">Nomor akan dinormalisasi ke format `62xxxxxxxx` untuk kebutuhan notifikasi dan OTP.</div>
             </div>
+            <div class="jm-member-card">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <label class="jm-member-kv-label" for="profile-bank-name">Bank payout affiliate</label>
+                        <div class="mt-2 text-sm text-muted">Dipakai saat pencairan komisi affiliate. Jika akun affiliate Anda aktif, data ini wajib lengkap.</div>
+                    </div>
+                    @if ($needsPayoutAccount)
+                        <span class="jm-member-badge jm-member-badge--warn">Wajib dilengkapi</span>
+                    @endif
+                </div>
+                <div class="mt-4 grid gap-4">
+                    <input id="profile-bank-name" name="bank_name" placeholder="Contoh: BCA" value="{{ old('bank_name', $bankAccount?->bank_name) }}" class="w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]">
+                    <input name="account_number" inputmode="numeric" placeholder="Nomor rekening" value="{{ old('account_number', $bankAccount?->account_number) }}" class="w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]">
+                    <input name="account_holder" placeholder="Nama pemilik rekening" value="{{ old('account_holder', $bankAccount?->account_holder ?: $user->name) }}" class="w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]">
+                </div>
+            </div>
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div class="text-sm text-muted">Bergabung sejak {{ $user->created_at?->translatedFormat('d F Y') }}</div>
                 <button class="jm-member-btn jm-member-btn--primary">Simpan profil</button>
@@ -57,7 +73,9 @@
             </div>
             <div class="jm-member-card">
                 <div class="jm-member-kv-label">Status profil</div>
-                <div class="jm-member-kv-value">{{ $user->phone ? 'Lengkap' : 'Perlu dilengkapi' }}</div>
+                <div class="jm-member-kv-value">
+                    {{ $user->phone && (! $user->affiliate || ! $needsPayoutAccount) ? 'Lengkap' : 'Perlu dilengkapi' }}
+                </div>
             </div>
         </div>
     </div>

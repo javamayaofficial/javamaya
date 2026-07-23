@@ -38,6 +38,7 @@ class User extends Authenticatable implements FilamentUser
     public function memberAccess()     { return $this->hasMany(MemberAccess::class); }
     public function orders()           { return $this->hasMany(Order::class); }
     public function affiliate()        { return $this->hasOne(Affiliate::class); }
+    public function bankAccounts()     { return $this->hasMany(BankAccount::class); }
     public function certificates()     { return $this->hasMany(Certificate::class); }
     public function trustedDevices()   { return $this->hasMany(UserTrustedDevice::class); }
 }

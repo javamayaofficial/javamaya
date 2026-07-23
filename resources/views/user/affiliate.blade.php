@@ -28,6 +28,25 @@
         <h2 class="jm-member-panel-title">Catatan</h2>
         <p class="jm-member-panel-copy">Halaman ini saya siapkan agar member area terasa lengkap seperti referensi Averion, sekaligus tetap nyambung dengan data affiliate Javamaya.</p>
         <div class="mt-6 jm-member-card">
+            <div class="font-bold text-[#072347]">Rekening payout affiliate</div>
+            <div class="mt-2 text-sm text-muted">Simpan rekening tujuan pencairan komisi dari halaman profil, agar siap dipakai ketika akun affiliate aktif.</div>
+            <div class="mt-5 grid gap-3">
+                <div>
+                    <div class="jm-member-kv-label">Status rekening payout</div>
+                    @if ($bankAccount && $bankAccount->bank_name && $bankAccount->account_number && $bankAccount->account_holder)
+                        <div class="mt-2 font-bold text-[#072347]">{{ $bankAccount->bank_name }} · {{ $bankAccount->account_number }}</div>
+                        <div class="mt-1 text-sm text-muted">a.n. {{ $bankAccount->account_holder }}</div>
+                    @else
+                        <div class="mt-2 text-sm text-amber-700">Data rekening payout belum lengkap.</div>
+                    @endif
+                </div>
+                <div>
+                    <a href="{{ route('user.profile') }}" class="jm-member-btn jm-member-btn--ghost">Lengkapi rekening payout</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 jm-member-card">
             @if ($affiliate)
                 <div class="font-bold text-[#072347]">Akun affiliate aktif</div>
                 <div class="mt-2 text-sm text-muted">Gunakan slug Anda untuk tracking referral. Riwayat komisi terakhir tampil di bawah.</div>
