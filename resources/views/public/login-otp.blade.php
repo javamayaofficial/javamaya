@@ -18,7 +18,6 @@
             <p class="text-sm text-slate-500 text-center">Kode dikirim ke WhatsApp <b x-text="phone"></b> (berlaku 5 menit).</p>
             <input name="code" required inputmode="numeric" maxlength="6" placeholder="6 digit kode"
                    class="jm-input">
-            <input name="name" placeholder="Nama (untuk akun baru, opsional)" class="jm-input">
             <button class="w-full btn-accent text-white font-bold rounded-xl py-3.5 min-h-[48px] shadow-cta hover:opacity-90 transition">Verifikasi & Masuk</button>
         </form>
     </div>

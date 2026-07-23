@@ -24,7 +24,6 @@ class OtpController extends Controller
         $data = $request->validate([
             'phone' => 'required|string|min:9|max:20',
             'code'  => 'required|digits:6',
-            'name'  => 'nullable|string|max:100',
         ]);
 
         if (! $this->otp->verify($data['phone'], $data['code'])) {
@@ -35,7 +34,7 @@ class OtpController extends Controller
         $user = User::firstOrCreate(
             ['phone' => $phone],
             [
-                'name' => $data['name'] ?: ('Pengguna ' . substr($phone, -4)),
+                'name' => 'Pengguna ' . substr($phone, -4),
                 'email' => $phone . '@wa.local',
                 'password' => bcrypt(str()->random(32)),
                 'role' => 'customer',
