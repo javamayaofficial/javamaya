@@ -657,6 +657,19 @@
             </section>
 
             <div class="jm-member-content">
+                @if (blank($memberUser?->phone))
+                    <section class="jm-member-panel" style="border-color: rgba(255, 145, 0, 0.18); background: linear-gradient(135deg, rgba(255, 247, 236, 0.98), rgba(255, 252, 247, 0.98));">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                <div class="jm-member-panel-title">Lengkapi profil Anda</div>
+                                <p class="jm-member-panel-copy">Akun Google Anda sudah masuk, tetapi nomor WhatsApp belum diisi. Lengkapi profil dulu agar member area dan notifikasi bekerja lebih utuh.</p>
+                            </div>
+                            @unless (request()->routeIs('user.profile'))
+                                <a href="{{ route('user.profile') }}" class="jm-member-btn jm-member-btn--primary">Lengkapi sekarang</a>
+                            @endunless
+                        </div>
+                    </section>
+                @endif
                 @yield('member_content')
             </div>
         </main>

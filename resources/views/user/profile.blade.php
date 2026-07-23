@@ -6,34 +6,33 @@
 @section('member_content')
 <section class="jm-member-split jm-member-split--2">
     <div class="jm-member-panel">
-        <h2 class="jm-member-panel-title">Identitas akun</h2>
-        <p class="jm-member-panel-copy">Informasi utama yang tersimpan pada akun Anda saat ini.</p>
-        <div class="mt-6 jm-member-stack">
+        <h2 class="jm-member-panel-title">Lengkapi profil</h2>
+        <p class="jm-member-panel-copy">Halaman ini sekarang bukan hanya ringkasan, tetapi juga tempat untuk melengkapi data profil setelah daftar lewat Google.</p>
+
+        @if ($errors->any())
+            <div class="mt-4 rounded-[18px] border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{{ $errors->first() }}</div>
+        @endif
+
+        <form method="POST" action="{{ route('user.profile.update') }}" class="mt-6 jm-member-stack">
+            @csrf
             <div class="jm-member-card">
-                <div class="jm-member-kv">
-                    <div class="jm-member-kv-label">Nama lengkap</div>
-                    <div class="jm-member-kv-value">{{ $user->name }}</div>
-                </div>
+                <label class="jm-member-kv-label" for="profile-name">Nama lengkap</label>
+                <input id="profile-name" name="name" value="{{ old('name', $user->name) }}" class="mt-3 w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]" required>
             </div>
             <div class="jm-member-card">
-                <div class="jm-member-kv">
-                    <div class="jm-member-kv-label">Email</div>
-                    <div class="jm-member-kv-value">{{ $user->email }}</div>
-                </div>
+                <label class="jm-member-kv-label" for="profile-email">Email</label>
+                <input id="profile-email" name="email" type="email" value="{{ old('email', $user->email) }}" class="mt-3 w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]" required>
             </div>
             <div class="jm-member-card">
-                <div class="jm-member-kv">
-                    <div class="jm-member-kv-label">Nomor WhatsApp</div>
-                    <div class="jm-member-kv-value">{{ $user->phone ?: 'Belum diisi' }}</div>
-                </div>
+                <label class="jm-member-kv-label" for="profile-phone">Nomor WhatsApp</label>
+                <input id="profile-phone" name="phone" inputmode="numeric" placeholder="08xxxxxxxxxx" value="{{ old('phone', $user->phone) }}" class="mt-3 w-full rounded-2xl border border-[rgba(0,59,143,0.12)] bg-white px-4 py-3 font-medium text-[#072347] outline-none focus:border-[rgba(255,145,0,0.45)]" required>
+                <div class="mt-2 text-sm text-muted">Nomor akan dinormalisasi ke format `62xxxxxxxx` untuk kebutuhan notifikasi dan OTP.</div>
             </div>
-            <div class="jm-member-card">
-                <div class="jm-member-kv">
-                    <div class="jm-member-kv-label">Bergabung sejak</div>
-                    <div class="jm-member-kv-value">{{ $user->created_at?->translatedFormat('d F Y') }}</div>
-                </div>
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="text-sm text-muted">Bergabung sejak {{ $user->created_at?->translatedFormat('d F Y') }}</div>
+                <button class="jm-member-btn jm-member-btn--primary">Simpan profil</button>
             </div>
-        </div>
+        </form>
     </div>
 
     <div class="jm-member-panel">
@@ -55,6 +54,10 @@
             <div class="jm-member-card">
                 <div class="jm-member-kv-label">Perangkat tepercaya</div>
                 <div class="jm-member-kv-value">{{ $trustedDevices }}</div>
+            </div>
+            <div class="jm-member-card">
+                <div class="jm-member-kv-label">Status profil</div>
+                <div class="jm-member-kv-value">{{ $user->phone ? 'Lengkap' : 'Perlu dilengkapi' }}</div>
             </div>
         </div>
     </div>

@@ -137,6 +137,7 @@ Route::middleware(['web', 'auth', 'jm.maintenance', 'jm.session', 'jm.tick'])
     Route::get('/certificate/{certificate}', [AccountController::class, 'certificateDownload'])->name('certificate.download');
     Route::get('/affiliate', [AccountController::class, 'affiliate'])->name('affiliate');
     Route::get('/profil', [AccountController::class, 'profile'])->name('profile');
+    Route::post('/profil', [AccountController::class, 'updateProfile'])->name('profile.update');
 
     Route::get('/sesi', [AccountController::class, 'sessions'])->name('sessions');
     Route::post('/sesi/{id}/cabut', [AccountController::class, 'revokeSession'])->name('sessions.revoke');

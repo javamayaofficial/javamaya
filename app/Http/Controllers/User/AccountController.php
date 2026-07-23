@@ -11,6 +11,7 @@ use App\Models\ProductDownload;
 use App\Services\Auth\SessionManager;
 use App\Services\Download\DownloadTokenManager;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class AccountController extends Controller
 {
@@ -142,6 +143,25 @@ class AccountController extends Controller
                 ->count(),
             'ordersCount' => $user->orders()->count(),
         ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => ['required', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => 'required|string|min:9|max:20',
+        ]);
+
+        $user->update([
+            'name' => $data['name'],
+            'email' => strtolower($data['email']),
+            'phone' => jm_normalize_phone($data['phone']),
+        ]);
+
+        return back()->with('status', 'Profil berhasil diperbarui.');
     }
 
     public function gdprStore(Request $request)

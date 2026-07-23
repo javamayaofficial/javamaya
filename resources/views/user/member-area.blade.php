@@ -18,7 +18,12 @@
             <div>
                 <div class="jm-member-empty-title">Belum ada akses aktif</div>
                 <div class="jm-member-empty-copy">Semua kelas, lisensi, dan produk digital yang Anda beli akan muncul otomatis di area ini.</div>
-                <a href="{{ route('home') }}" class="mt-6 inline-flex jm-member-btn jm-member-btn--primary">Lihat katalog</a>
+                <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                    @if (blank(auth()->user()?->phone))
+                        <a href="{{ route('user.profile') }}" class="inline-flex jm-member-btn jm-member-btn--primary">Lengkapi profil</a>
+                    @endif
+                    <a href="{{ route('home') }}" class="inline-flex jm-member-btn jm-member-btn--ghost">Buka homepage</a>
+                </div>
             </div>
         </div>
     @else

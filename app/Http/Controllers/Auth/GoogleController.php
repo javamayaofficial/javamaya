@@ -15,6 +15,11 @@ class GoogleController extends Controller
             && filled(jm_setting('google_client_secret', env('GOOGLE_CLIENT_SECRET')));
     }
 
+    protected function needsProfileCompletion(User $user): bool
+    {
+        return blank($user->phone);
+    }
+
     protected function applyRuntimeConfig(): void
     {
         config([
@@ -58,6 +63,11 @@ class GoogleController extends Controller
         }
         Auth::login($user, true);
         request()->session()->regenerate();
+
+        if ($this->needsProfileCompletion($user)) {
+            return redirect()->route('user.profile')->with('status', 'Lengkapi profil Anda dulu agar akun siap dipakai sepenuhnya.');
+        }
+
         return redirect()->route('user.dashboard');
     }
 }
