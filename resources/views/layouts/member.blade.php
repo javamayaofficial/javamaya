@@ -210,34 +210,6 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 32px rgba(0, 0, 0, 0.22);
     }
 
-    .jm-member-link-form {
-        display: block;
-    }
-
-    .jm-member-link-form button {
-        width: 100%;
-        text-align: left;
-        font-family: inherit;
-        cursor: pointer;
-    }
-
-    .jm-member-link--logout {
-        color: #ffd2d8;
-        background: rgba(255, 255, 255, 0.03);
-        border-color: rgba(255, 132, 159, 0.16);
-    }
-
-    .jm-member-link--logout:hover {
-        color: #fff2f4;
-        background: rgba(255, 132, 159, 0.12);
-        border-color: rgba(255, 132, 159, 0.24);
-    }
-
-    .jm-member-link--logout .jm-member-link-badge {
-        color: #ff9db0;
-        background: rgba(255, 132, 159, 0.1);
-    }
-
     .jm-member-link-badge {
         width: 2.2rem;
         height: 2.2rem;
@@ -731,10 +703,6 @@
             padding: 0.9rem;
         }
 
-        .jm-member-link-form--logout {
-            grid-column: 1 / -1;
-        }
-
         .jm-member-link {
             flex-direction: column;
             align-items: flex-start;
@@ -892,7 +860,6 @@
         'certificate' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5.25h10A1.75 1.75 0 0 1 18.75 7v6A1.75 1.75 0 0 1 17 14.75H13.5L12 18l-1.5-3.25H7A1.75 1.75 0 0 1 5.25 13V7A1.75 1.75 0 0 1 7 5.25z"/><circle cx="12" cy="10" r="2.25"/></svg>',
         'affiliate' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.25c4.15 0 7.5-3.35 7.5-7.5S16.15 4.25 12 4.25 4.5 7.6 4.5 11.75s3.35 7.5 7.5 7.5z"/><path d="M9.25 14.25c.72.86 1.67 1.25 2.75 1.25 1.52 0 2.75-.92 2.75-2.25 0-1.2-.83-1.93-2.5-2.3l-.5-.11c-1.67-.37-2.5-1.1-2.5-2.29 0-1.33 1.23-2.25 2.75-2.25 1.08 0 1.94.38 2.75 1.25"/><path d="M12 6.25v11"/></svg>',
         'profile' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5z"/><path d="M5.5 18.25a6.5 6.5 0 0 1 13 0"/></svg>',
-        'logout' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 7.25V6.5A2.5 2.5 0 0 1 12.5 4h4A2.5 2.5 0 0 1 19 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-4A2.5 2.5 0 0 1 10 17.5v-.75"/><path d="M15 12H5.75"/><path d="m8.75 8.75-3.25 3.25 3.25 3.25"/></svg>',
         'menu' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7.5h15"/><path d="M4.5 12h15"/><path d="M4.5 16.5h15"/></svg>',
         'close' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5 17.5 17.5"/><path d="M17.5 6.5 6.5 17.5"/></svg>',
         'more' => '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>',
@@ -957,16 +924,6 @@
                         </span>
                     </a>
                 @endforeach
-                <form method="POST" action="{{ route('logout') }}" class="jm-member-link-form jm-member-link-form--logout">
-                    @csrf
-                    <button type="submit" class="jm-member-link jm-member-link--logout">
-                        <span class="jm-member-link-badge">{!! $memberIconMap['logout'] !!}</span>
-                        <span>
-                            <span class="jm-member-link-label">Keluar</span>
-                            <span class="jm-member-link-copy">Logout cepat dari navigasi utama</span>
-                        </span>
-                    </button>
-                </form>
             </nav>
 
             <div class="jm-member-sidebar-foot">
@@ -979,7 +936,7 @@
                         </div>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">@csrf
-                        <button class="jm-member-logout">Keluar dari akun</button>
+                        <button class="jm-member-logout">Keluar</button>
                     </form>
                 </div>
             </div>
